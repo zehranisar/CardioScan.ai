@@ -6,7 +6,7 @@ import {
 
 export default function DashboardCard() {
   return (
-    <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl">
+    <div className="w-full max-w-lgrounded-3xl border border-slate-200 bg-white p-10 shadow-2xl">
 
       {/* Header */}
       <div className="flex items-center gap-4">

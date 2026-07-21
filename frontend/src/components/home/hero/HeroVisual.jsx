@@ -1,15 +1,14 @@
-import DashboardCard from "./DashboardCard";
-import FloatingBadge from "./FloatingBadge";
+import heroImage from "@/assets/images/hero.svg";
 
 export default function HeroVisual() {
   return (
-    <div className="relative flex items-center justify-center lg:mt-12">
+    <div className="flex items-center justify-center lg:justify-end">
 
-      {/* Floating Badge */}
-      <FloatingBadge />
-
-      {/* Dashboard */}
-      <DashboardCard />
+      <img
+        src={heroImage}
+        alt="Healthcare Illustration"
+        className="w-full max-w-[650px] object-contain"
+      />
 
     </div>
   );
