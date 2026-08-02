@@ -16,7 +16,7 @@ export default function Logo() {
       <div className="leading-tight">
 
         <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-          CardioCare AI
+          Cardyx
         </h2>
 
         <p className="text-sm text-slate-500">

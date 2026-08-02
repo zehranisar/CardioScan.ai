@@ -1,4 +1,4 @@
-# CardioCare AI
+# Cardyx
 
 An AI-powered Heart Disease Prediction Platform built using Machine Learning, Flask, React, Supabase, and Google Gemini.
 

@@ -49,7 +49,7 @@ export default function Features() {
           </h2>
 
           <p className="mt-5 text-lg leading-8 text-slate-600">
-            CardioCare AI combines artificial intelligence, medical
+            Cardyx combines artificial intelligence, medical
             prediction and personalized assistance into one modern platform.
           </p>
 

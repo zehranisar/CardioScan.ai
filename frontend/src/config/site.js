@@ -1,16 +1,16 @@
 export const SITE = {
-  name: "CardioCare AI",
-  shortName: "CardioCare",
+  name: "Cardyx",
+  shortName: "Cardyx",
   slogan: "AI-Powered Heart Disease Prediction Platform",
 
   description:
     "An intelligent healthcare platform that predicts heart disease risk using Machine Learning and provides AI-powered health guidance.",
 
-  company: "CardioCare AI",
+  company: "Cardyx",
 
-  email: "support@cardiocare.ai",
+  email: "support@cardyx.ai",
 
-  github: "https://github.com/zehranisar/CardioCare-AI",
+  github: "https://github.com/zehranisar/Cardyx",
 
   version: "1.0.0",
 };

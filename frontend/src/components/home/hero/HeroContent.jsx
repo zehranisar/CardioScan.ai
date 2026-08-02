@@ -19,7 +19,7 @@ export default function HeroContent() {
       </h1>
 
       <p className="mt-8 max-w-[580px] text-lg leading-9 text-slate-600">
-        CardioCare AI combines Machine Learning, Explainable AI and
+        Cardyx combines Machine Learning, Explainable AI and
         Gemini-powered assistance to provide intelligent heart disease
         prediction, personalized health insights and cardiovascular
         risk assessment within seconds.
