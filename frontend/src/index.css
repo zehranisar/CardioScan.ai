@@ -1,25 +1,24 @@
 @import "tailwindcss";
 
 /*
-  Cardyx design tokens.
-  Palette: obsidian black + bone white + arterial red, with an oxblood
-  shade for depth. Display type is Fraunces (soft ink-trap serif — the
-  curves echo a pulse line), body is Inter, and data/labels use
-  JetBrains Mono for a clinical "readout" feel.
+  Cardyx design tokens - v2.
+  Palette: deep teal-ink + warm ivory + a coral-amber accent (vitality,
+  not alarm). Display type is Space Grotesk (bold, geometric, modern
+  health-tech), body is Inter, and data/labels use IBM Plex Mono for a
+  clinical "readout" feel.
 */
 @theme {
-  --color-obsidian: #0b0b0d;
-  --color-panel: #16151a;
-  --color-panel-line: #26242b;
-  --color-bone: #f5f1ec;
-  --color-ash: #8c8a90;
-  --color-pulse: #e8112d;
-  --color-pulse-dim: #b30e22;
-  --color-ember: #4a0d15;
+  --color-ink: #0e1013;
+  --color-surface: #17191d;
+  --color-hairline: #272a2f;
+  --color-ivory: #f5f3ee;
+  --color-slate: #8b8e94;
+  --color-ember: #ff7a45;
+  --color-ember-dim: #e35f2d;
 
-  --font-display: "Fraunces", "Georgia", serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 :root {
@@ -37,8 +36,8 @@ html {
 }
 
 body {
-  background: var(--color-obsidian);
-  color: var(--color-bone);
+  background: var(--color-ink);
+  color: var(--color-ivory);
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
@@ -58,11 +57,10 @@ img {
 }
 
 ::selection {
-  background: var(--color-pulse);
-  color: var(--color-bone);
+  background: var(--color-ember);
+  color: var(--color-ink);
 }
 
-/* Respect reduced-motion preference for all custom animations */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -71,24 +69,18 @@ img {
   }
 }
 
-/* Signature animations: a scrolling ECG line and a realistic lub-dub heartbeat */
-@keyframes ecg-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+@keyframes gauge-fill {
+  from { stroke-dashoffset: var(--gauge-circumference); }
+  to { stroke-dashoffset: var(--gauge-offset); }
 }
-.animate-ecg-scroll {
-  animation: ecg-scroll 5s linear infinite;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.22); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.14); }
-  56%, 70% { transform: scale(1); }
-}
-.animate-heartbeat {
-  animation: heartbeat 1.3s ease-in-out infinite;
-  transform-origin: center;
+.animate-gauge-fill {
+  animation: gauge-fill 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out forwards;
+}
