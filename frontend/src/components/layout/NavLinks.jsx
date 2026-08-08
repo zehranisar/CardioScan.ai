@@ -1,28 +1,23 @@
+import { Link } from "react-router-dom";
+
 const links = [
-  "Home",
-  "Features",
-  "Prediction",
-  "AI Assistant",
-  "About",
-  "Contact",
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Dashboard", href: "/dashboard" },
 ];
 
 export default function NavLinks() {
   return (
-    <nav className="hidden lg:flex items-center gap-8 xl:gap-10">
-
-      {links.map((item) => (
-
-        <a
-          key={item}
-          href="#"
-          className="relative font-medium text-slate-700 transition hover:text-red-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-red-600 after:transition-all hover:after:w-full"
+    <nav className="hidden items-center gap-8 lg:flex">
+      {links.map((link) => (
+        <Link
+          key={link.label}
+          to={link.href}
+          className="relative text-sm font-medium text-ash transition hover:text-bone"
         >
-          {item}
-        </a>
-
+          {link.label}
+        </Link>
       ))}
-
     </nav>
   );
 }
+

@@ -1,30 +1,16 @@
+import { Link } from "react-router-dom";
 import { HeartPulse } from "lucide-react";
 
 export default function Logo() {
   return (
-    <div className="flex items-center gap-3">
-
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600 shadow-lg shadow-red-200">
-
-        <HeartPulse
-          className="text-white"
-          size={24}
-        />
-
+    <Link to="/" className="flex items-center gap-2.5">
+      <div className="flex h-9 w-9 items-center justify-center border border-pulse/40 bg-pulse/10">
+        <HeartPulse size={18} className="text-pulse" />
       </div>
-
-      <div className="leading-tight">
-
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-          Cardyx
-        </h2>
-
-        <p className="text-sm text-slate-500">
-          AI Healthcare Platform
-        </p>
-
-      </div>
-
-    </div>
+      <span className="font-display text-xl font-medium tracking-tight text-bone">
+        Cardyx
+      </span>
+    </Link>
   );
 }
+

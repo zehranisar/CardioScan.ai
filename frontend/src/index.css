@@ -1,83 +1,94 @@
 @import "tailwindcss";
 
-:root{
+/*
+  Cardyx design tokens.
+  Palette: obsidian black + bone white + arterial red, with an oxblood
+  shade for depth. Display type is Fraunces (soft ink-trap serif — the
+  curves echo a pulse line), body is Inter, and data/labels use
+  JetBrains Mono for a clinical "readout" feel.
+*/
+@theme {
+  --color-obsidian: #0b0b0d;
+  --color-panel: #16151a;
+  --color-panel-line: #26242b;
+  --color-bone: #f5f1ec;
+  --color-ash: #8c8a90;
+  --color-pulse: #e8112d;
+  --color-pulse-dim: #b30e22;
+  --color-ember: #4a0d15;
 
---background:#F8FAFC;
---foreground:#0F172A;
-
---primary:#DC2626;
---primary-light:#EF4444;
-
---secondary:#64748B;
-
---card:#FFFFFF;
-
---border:#E2E8F0;
-
---success:#10B981;
-
---radius:20px;
-
-font-family:"Inter",sans-serif;
-
-background:var(--background);
-
-color:var(--foreground);
-
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-*{
-
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
+:root {
+  color-scheme: dark;
 }
 
-html{
-
-scroll-behavior:smooth;
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-
-background:#F8FAFC;
-
-color:#0F172A;
-
-font-family:"Inter",sans-serif;
-
-overflow-x:hidden;
-
+html {
+  scroll-behavior: smooth;
 }
 
-h1,h2,h3,h4,h5{
-
-font-family:"Poppins",sans-serif;
-
+body {
+  background: var(--color-obsidian);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
-button{
-
-cursor:pointer;
-
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
 }
 
-img{
-
-display:block;
-
-max-width:100%;
-
+button {
+  cursor: pointer;
+  font-family: inherit;
 }
 
-::selection{
-
-background:#DC2626;
-
-color:white;
-
+img {
+  display: block;
+  max-width: 100%;
 }
+
+::selection {
+  background: var(--color-pulse);
+  color: var(--color-bone);
+}
+
+/* Respect reduced-motion preference for all custom animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Signature animations: a scrolling ECG line and a realistic lub-dub heartbeat */
+@keyframes ecg-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-ecg-scroll {
+  animation: ecg-scroll 5s linear infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.22); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.14); }
+  56%, 70% { transform: scale(1); }
+}
+.animate-heartbeat {
+  animation: heartbeat 1.3s ease-in-out infinite;
+  transform-origin: center;
+}
+

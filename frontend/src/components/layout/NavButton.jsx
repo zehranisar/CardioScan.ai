@@ -1,15 +1,22 @@
+import { Link } from "react-router-dom";
+
 export default function NavButton() {
   return (
-    <div className="hidden lg:flex items-center gap-4">
+    <div className="hidden items-center gap-5 lg:flex">
+      <Link
+        to="/login"
+        className="text-sm font-medium text-ash transition hover:text-bone"
+      >
+        Log in
+      </Link>
 
-      <button className="font-medium text-slate-700 transition hover:text-red-600">
-        Login
-      </button>
-
-      <button className="rounded-xl bg-red-600 px-6 py-3 font-semibold text-white shadow-lg shadow-red-200 transition hover:-translate-y-0.5 hover:bg-red-700">
-        Get Started
-      </button>
-
+      <Link
+        to="/dashboard"
+        className="bg-pulse px-5 py-2.5 text-sm font-medium text-bone transition hover:bg-pulse-dim"
+      >
+        Get started
+      </Link>
     </div>
   );
 }
+

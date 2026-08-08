@@ -1,3 +1,92 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { HeartPulse } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import ECGLine from "@/components/home/ECGLine";
+
 export default function Login() {
-  return <h1>Login Page</h1>;
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  function handleChange(e) {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // Account system isn't wired up yet — this is a demo gateway to the dashboard.
+    navigate("/dashboard");
+  }
+
+  return (
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-obsidian px-6 py-32">
+      <ECGLine className="pointer-events-none absolute inset-x-0 top-1/2 h-32 -translate-y-1/2 opacity-[0.05]" />
+
+      <div className="relative w-full max-w-md border border-panel-line bg-panel p-8">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center border border-pulse/40 bg-pulse/10">
+            <HeartPulse size={18} className="text-pulse" />
+          </div>
+          <span className="font-display text-xl font-medium text-bone">Cardyx</span>
+        </div>
+
+        <p className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-pulse">
+          Welcome back
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-medium text-bone">
+          Log in to your account
+        </h1>
+
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-ash">
+              Email
+            </label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-sm font-medium text-ash">
+              Password
+            </label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="********"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
+
+          <Button type="submit" className="mt-2 w-full">
+            Log in
+          </Button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-ash">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-pulse hover:underline">
+            Sign up
+          </Link>
+        </p>
+
+        <p className="mt-8 border-t border-panel-line pt-4 text-center text-xs text-ash">
+          Demo mode — account system isn't connected yet. Logging in takes
+          you straight to the dashboard.
+        </p>
+      </div>
+    </section>
+  );
 }
