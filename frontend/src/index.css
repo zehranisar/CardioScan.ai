@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* CardioScan.ai design tokens */
+  --color-ink: #12211F;
+  --color-abyss: #071815;
+  --color-abyss-2: #0D332F;
+  --color-teal-deep: #0F4C4C;
+  --color-teal: #17635F;
+  --color-teal-soft: #E4EFEC;
+  --color-mist: #EAF1EE;
+  --color-cream: #F4F1E8;
+  --color-coral: #E8664F;
+  --color-coral-bright: #FF7A5C;
+  --color-coral-soft: #FBE6E1;
+  --color-sage: #3F5652;
+  --color-amber: #D9A441;
+  --color-amber-soft: #FBF1DE;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-mist);
+  background-image:
+    radial-gradient(ellipse 800px 500px at 100% 30%, rgba(232, 102, 79, 0.12), transparent 55%),
+    radial-gradient(ellipse 700px 500px at 0% 80%, rgba(15, 76, 76, 0.10), transparent 50%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-coral-soft);
+  color: var(--color-coral);
+}
+
+/* visible keyboard focus */
+:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes draw-pulse {
+  to { stroke-dashoffset: 0; }
+}
+
+.pulse-line-draw {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: draw-pulse 2.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fade-up 0.7s ease-out forwards;
+}
