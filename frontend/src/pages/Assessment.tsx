@@ -1,25 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { getPrediction } from "../lib/api";
+import type { AssessmentPayload } from "../lib/api";
+import ReportUpload from "../components/ReportUpload";
 
-type FormData = {
-  age: string;
-  sex: string;
-  cp: string;
-  trestbps: string;
-  chol: string;
-  fbs: string;
-  restecg: string;
-  thalach: string;
-  exang: string;
-  oldpeak: string;
-  slope: string;
-  ca: string;
-  thal: string;
-};
-
-const EMPTY_FORM: FormData = {
+const EMPTY_FORM: AssessmentPayload = {
   age: "",
   sex: "",
   cp: "",
@@ -40,12 +26,16 @@ const STEPS = ["Personal & vitals", "Symptoms", "Cardiac tests"];
 export default function Assessment() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormData>(EMPTY_FORM);
+  const [form, setForm] = useState<AssessmentPayload>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = (field: keyof FormData, value: string) =>
+  const update = (field: keyof AssessmentPayload, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
+
+  const handleExtracted = (fields: Partial<AssessmentPayload>) => {
+    setForm((prev) => ({ ...prev, ...fields }));
+  };
 
   const isStepValid = () => {
     if (step === 0) return form.age && form.sex && form.trestbps && form.chol && form.fbs;
@@ -61,15 +51,12 @@ export default function Assessment() {
   const handleSubmit = async () => {
     setSubmitting(true);
     setError(null);
+
     try {
       const result = await getPrediction(form);
-      navigate("/results", { state: { result } });
-    } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Something went wrong reaching the prediction service."
-      );
+      navigate("/results", { state: { result, inputs: form } });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -109,11 +96,15 @@ export default function Assessment() {
 
         {/* Form card */}
         <div className="mt-8 rounded-3xl border border-white/60 bg-white/95 p-7 shadow-[0_20px_60px_-20px_rgba(15,76,76,0.2)] sm:p-9">
+          {step === 0 && <ReportUpload onExtracted={handleExtracted} />}
+
           {error && (
-            <div className="mb-6 rounded-xl border border-[var(--color-coral)]/30 bg-[var(--color-coral-soft)] px-4 py-3 text-sm text-[var(--color-coral)]">
+            <div className="mb-5 flex items-start gap-2 rounded-xl border border-[var(--color-coral)]/30 bg-[var(--color-coral-soft)] px-4 py-3 text-sm text-[var(--color-coral)]">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
               {error}
             </div>
           )}
+
           {step === 0 && (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <NumberField
