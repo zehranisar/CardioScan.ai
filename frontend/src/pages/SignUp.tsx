@@ -23,6 +23,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // OTP verification step
   const [awaitingOtp, setAwaitingOtp] = useState(false);
   const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -53,6 +54,7 @@ export default function SignUp() {
     }
 
     if (data.session) {
+      // Email confirmation is disabled in the Supabase project — signed in immediately.
       navigate("/", { replace: true });
       return;
     }
@@ -127,7 +129,7 @@ export default function SignUp() {
                 type="text"
                 inputMode="numeric"
                 autoFocus
-                maxLength={6}
+                maxLength={8}
                 required
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
@@ -138,7 +140,7 @@ export default function SignUp() {
 
             <button
               type="submit"
-              disabled={verifying || otp.length !== 6}
+              disabled={verifying || otp.length < 6}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-coral)] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
             >
               {verifying && <Loader2 className="h-4 w-4 animate-spin" />}
