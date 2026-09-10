@@ -1,7 +1,11 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import predict
+from app.routers import predict, ocr
 
 app = FastAPI(
     title="CardioScan.ai API",
@@ -20,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(predict.router)
+app.include_router(ocr.router)
 
 
 @app.get("/")
