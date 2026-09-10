@@ -55,11 +55,17 @@ def main():
     print(f"ROC AUC:  {auc:.3f}")
     print(classification_report(y_test, y_pred))
 
-    # Retrain on the full dataset for the model that ships in production,
-    # now that we've measured held-out performance above.
     model.fit(X, y)
 
-    joblib.dump({"model": model, "feature_order": FEATURE_ORDER}, MODEL_PATH)
+    # Reference ("typical patient") values used by the perturbation-based
+    # explainer at prediction time — replacing a feature with this value
+    # approximates "what if this factor were average instead".
+    reference = X.mean().to_dict()
+
+    joblib.dump(
+        {"model": model, "feature_order": FEATURE_ORDER, "reference": reference},
+        MODEL_PATH,
+    )
 
     METRICS_PATH.write_text(json.dumps({
         "accuracy": round(acc, 4),
