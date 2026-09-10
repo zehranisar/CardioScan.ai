@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, HeartPulse, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, HeartPulse, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import ConfirmDialog from "./ConfirmDialog";
 
@@ -125,9 +125,17 @@ export default function Navbar() {
                         <p className="truncate text-xs text-[var(--color-sage)]">{user.email}</p>
                       )}
                     </div>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex w-full items-center gap-2 px-4 py-3 text-sm font-medium text-[var(--color-ink)] transition-colors hover:bg-[var(--color-teal-soft)]"
+                    >
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
                     <button
                       onClick={() => setConfirmSignOut(true)}
-                      className="flex w-full items-center gap-2 px-4 py-3 text-sm font-medium text-[var(--color-coral)] transition-colors hover:bg-[var(--color-coral-soft)]"
+                      className="flex w-full items-center gap-2 border-t border-[var(--color-teal-soft)] px-4 py-3 text-sm font-medium text-[var(--color-coral)] transition-colors hover:bg-[var(--color-coral-soft)]"
                     >
                       <LogOut className="h-4 w-4" />
                       Sign out
