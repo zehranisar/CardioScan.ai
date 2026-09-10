@@ -57,3 +57,39 @@ export async function getPrediction(form: AssessmentPayload): Promise<Assessment
 
   return res.json();
 }
+
+// Raw shape returned by the OCR endpoint — numbers stay numbers here,
+// booleans stay booleans for fbs/exang; the caller converts to the
+// string-based AssessmentPayload shape the form uses.
+export type ExtractedFields = Partial<{
+  age: number;
+  sex: "male" | "female";
+  cp: "typical" | "atypical" | "non_anginal" | "asymptomatic";
+  trestbps: number;
+  chol: number;
+  fbs: "1" | "0";
+  restecg: "normal" | "st_t_abnormality" | "lv_hypertrophy";
+  thalach: number;
+  exang: "1" | "0";
+  oldpeak: number;
+  slope: "upsloping" | "flat" | "downsloping";
+  ca: "0" | "1" | "2" | "3";
+  thal: "normal" | "fixed_defect" | "reversible_defect";
+}>;
+
+export async function extractFromReport(file: File): Promise<ExtractedFields> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${API_URL}/ocr/extract`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.detail ?? `Extraction failed with status ${res.status}`);
+  }
+
+  return res.json();
+}
