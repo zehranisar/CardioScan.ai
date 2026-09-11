@@ -93,3 +93,34 @@ export async function extractFromReport(file: File): Promise<ExtractedFields> {
 
   return res.json();
 }
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type ChatContext = {
+  risk_probability: number;
+  risk_label: string;
+  top_factors: Factor[];
+};
+
+export async function sendChatMessage(
+  message: string,
+  history: ChatMessage[],
+  context?: ChatContext
+): Promise<string> {
+  const res = await fetch(`${API_URL}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, history, context }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.detail ?? `Request failed with status ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.reply;
+}
