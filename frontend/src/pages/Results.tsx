@@ -1,6 +1,10 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { AlertTriangle, HeartPulse, MessagesSquare, RotateCcw } from "lucide-react";
-import type { AssessmentResult } from "../lib/api";
+import { AlertTriangle, HeartPulse, MessagesSquare, RotateCcw, LayoutDashboard, Loader2 } from "lucide-react";
+import type { AssessmentPayload, AssessmentResult } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
+import { saveAssessment } from "../lib/assessments";
+import ChatPanel from "../components/ChatPanel";
 
 const RISK_STYLES: Record<
   AssessmentResult["risk_label"],
@@ -29,7 +33,22 @@ const RISK_STYLES: Record<
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const result = location.state?.result as AssessmentResult | undefined;
+  const inputs = location.state?.inputs as AssessmentPayload | undefined;
+
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [chatOpen, setChatOpen] = useState(false);
+
+  useEffect(() => {
+    if (!user || !result || !inputs || saveState !== "idle") return;
+
+    setSaveState("saving");
+    saveAssessment(user.id, inputs, result)
+      .then(() => setSaveState("saved"))
+      .catch(() => setSaveState("error"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, result, inputs]);
 
   if (!result) {
     return (
@@ -55,7 +74,6 @@ export default function Results() {
 
   const style = RISK_STYLES[result.risk_label];
   const pct = Math.round(result.risk_probability * 100);
-  // gauge arc: circumference of the visible half-circle path is ~267
   const dashOffset = 267 - (267 * pct) / 100;
 
   return (
@@ -150,20 +168,53 @@ export default function Results() {
             Retake assessment
           </Link>
           <button
-            disabled
-            title="Assistant coming soon"
-            className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-full bg-[var(--color-abyss)] px-6 py-3 text-sm font-semibold text-white opacity-60"
+            onClick={() => setChatOpen(true)}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--color-abyss)] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
           >
             <MessagesSquare className="h-4 w-4" />
             Ask the assistant
           </button>
         </div>
 
+        {user && (
+          <div className="mt-4 text-center">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-teal-deep)] hover:text-[var(--color-coral)]"
+            >
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              View dashboard
+            </Link>
+          </div>
+        )}
+
+        {user && (
+          <p className="mt-4 text-center text-xs text-[var(--color-sage)]">
+            {saveState === "saving" && (
+              <span className="inline-flex items-center gap-1.5">
+                <Loader2 className="h-3 w-3 animate-spin" /> Saving to your history...
+              </span>
+            )}
+            {saveState === "saved" && "Saved to your assessment history."}
+            {saveState === "error" && "Couldn't save this to your history — you can still view it now."}
+          </p>
+        )}
+
         <div className="mt-8 flex items-center justify-center gap-1.5 text-xs text-[var(--color-sage)]">
           <HeartPulse className="h-3.5 w-3.5" />
           CardioScan.ai — informational estimate only, not a medical diagnosis
         </div>
       </div>
+
+      <ChatPanel
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        context={{
+          risk_probability: result.risk_probability,
+          risk_label: result.risk_label,
+          top_factors: result.top_factors,
+        }}
+      />
     </main>
   );
 }
