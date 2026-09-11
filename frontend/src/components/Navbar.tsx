@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Features", href: "/#features" },
   { label: "Assistant", href: "/#assistant" },
-  { label: "About", href: "/#about" },
+   { label: "About", href: "/about" },
 ];
 
 function getInitials(nameOrEmail: string) {
