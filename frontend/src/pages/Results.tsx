@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { AlertTriangle, HeartPulse, MessagesSquare, RotateCcw, LayoutDashboard, Loader2 } from "lucide-react";
+import { AlertTriangle, HeartPulse, MessagesSquare, RotateCcw, LayoutDashboard, Loader2, Download } from "lucide-react";
 import type { AssessmentPayload, AssessmentResult } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { saveAssessment } from "../lib/assessments";
+import { downloadReportPDF } from "../lib/pdf";
 import ChatPanel from "../components/ChatPanel";
 
 const RISK_STYLES: Record<
@@ -167,6 +168,14 @@ export default function Results() {
             <RotateCcw className="h-4 w-4" />
             Retake assessment
           </Link>
+          <button
+            onClick={() => inputs && downloadReportPDF(result, inputs)}
+            disabled={!inputs}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-teal-soft)] bg-white px-6 py-3 text-sm font-semibold text-[var(--color-teal-deep)] transition-colors hover:bg-[var(--color-teal-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Download className="h-4 w-4" />
+            Download report
+          </button>
           <button
             onClick={() => setChatOpen(true)}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--color-abyss)] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
