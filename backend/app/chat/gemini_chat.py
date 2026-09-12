@@ -70,7 +70,8 @@ async def chat_with_assistant(
         "systemInstruction": {"parts": [{"text": _build_system_prompt(context)}]},
         "generationConfig": {
             "temperature": 0.4,
-            "maxOutputTokens": 400,
+            "maxOutputTokens": 1024,
+            "thinkingConfig": {"thinkingBudget": 0},
         },
     }
 
