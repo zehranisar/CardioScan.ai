@@ -9,7 +9,7 @@ import os
 import httpx
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 BASE_SYSTEM_PROMPT = """You are the CardioScan.ai assistant, a focused cardiovascular
