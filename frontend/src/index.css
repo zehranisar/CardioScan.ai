@@ -82,3 +82,6 @@ body {
 .fade-up {
   animation: fade-up 0.7s ease-out forwards;
 }
+html, body {
+  overflow-x: hidden;
+}
