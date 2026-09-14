@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Features", href: "/#features" },
   { label: "Assistant", href: "/#assistant" },
-   { label: "About", href: "/about" },
+  { label: "About", href: "/about" },
 ];
 
 function getInitials(nameOrEmail: string) {
@@ -208,6 +208,17 @@ export default function Navbar() {
               >
                 Start assessment
               </Link>
+
+              {user && (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-1.5 text-sm font-semibold text-[var(--color-teal-deep)]"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              )}
 
               {user ? (
                 <button
