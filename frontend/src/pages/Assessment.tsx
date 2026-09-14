@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { getPrediction } from "../lib/api";
 import type { AssessmentPayload } from "../lib/api";
 import ReportUpload from "../components/ReportUpload";
+import AnalyzingOverlay from "../components/AnalyzingOverlay";
 
 const EMPTY_FORM: AssessmentPayload = {
   age: "",
@@ -64,6 +65,7 @@ export default function Assessment() {
 
   return (
     <main className="min-h-screen bg-[var(--color-mist)] px-6 pb-20 pt-28">
+      {submitting && <AnalyzingOverlay />}
       <div className="mx-auto max-w-xl">
         <div className="text-center">
           <span className="text-xs font-semibold uppercase tracking-wide text-[var(--color-coral)]">
