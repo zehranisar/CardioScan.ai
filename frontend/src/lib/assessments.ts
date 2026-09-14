@@ -36,3 +36,8 @@ export async function getAssessments(userId: string): Promise<SavedAssessment[]>
   if (error) throw error;
   return data as SavedAssessment[];
 }
+
+export async function deleteAssessment(id: string) {
+  const { error } = await supabase.from("assessments").delete().eq("id", id);
+  if (error) throw error;
+}
