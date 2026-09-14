@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { AlertCircle, ArrowRight, HeartPulse, Loader2, PlusCircle } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  HeartPulse,
+  Loader2,
+  PlusCircle,
+  Trash2,
+  GitCompare,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getAssessments } from "../lib/assessments";
+import { getAssessments, deleteAssessment } from "../lib/assessments";
 import type { SavedAssessment } from "../lib/assessments";
+import ConfirmDialog from "../components/ConfirmDialog";
+import CompareModal from "../components/CompareModal";
 
 const RISK_DOT: Record<SavedAssessment["risk_label"], string> = {
   Low: "bg-[var(--color-teal)]",
@@ -17,6 +27,12 @@ export default function Dashboard() {
   const [items, setItems] = useState<SavedAssessment[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [selected, setSelected] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     getAssessments(user.id)
@@ -28,6 +44,29 @@ export default function Dashboard() {
     return <Navigate to="/signin" state={{ from: "/dashboard" }} replace />;
   }
 
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 2) return [prev[1], id]; // keep most recent 2 picks
+      return [...prev, id];
+    });
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!pendingDeleteId) return;
+    setDeleting(true);
+    try {
+      await deleteAssessment(pendingDeleteId);
+      setItems((prev) => (prev ? prev.filter((a) => a.id !== pendingDeleteId) : prev));
+      setSelected((prev) => prev.filter((id) => id !== pendingDeleteId));
+    } catch {
+      setError("Couldn't delete that assessment. Please try again.");
+    } finally {
+      setDeleting(false);
+      setPendingDeleteId(null);
+    }
+  };
+
   const chartData = (items ?? [])
     .slice()
     .reverse()
@@ -35,6 +74,9 @@ export default function Dashboard() {
       date: new Date(a.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
       risk: Math.round(a.risk_probability * 100),
     }));
+
+  const selectedItems =
+    items?.filter((a) => selected.includes(a.id)).sort((x, y) => selected.indexOf(x.id) - selected.indexOf(y.id)) ?? [];
 
   return (
     <main className="min-h-screen bg-[var(--color-mist)] px-6 pb-20 pt-28">
@@ -123,13 +165,42 @@ export default function Dashboard() {
               </div>
             )}
 
-            <div className="mt-6 space-y-3">
+            {items.length > 1 && (
+              <div className="mt-6 flex items-center justify-between">
+                <p className="text-xs text-[var(--color-sage)]">
+                  {selected.length === 0 && "Select two assessments to compare."}
+                  {selected.length === 1 && "Select one more to compare."}
+                  {selected.length === 2 && "Ready to compare."}
+                </p>
+                <button
+                  onClick={() => setCompareOpen(true)}
+                  disabled={selected.length !== 2}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-abyss)] px-4 py-2 text-xs font-semibold text-white transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+                >
+                  <GitCompare className="h-3.5 w-3.5" />
+                  Compare selected
+                </button>
+              </div>
+            )}
+
+            <div className="mt-3 space-y-3">
               {items.map((a) => (
                 <div
                   key={a.id}
-                  className="flex items-center justify-between rounded-2xl border border-white/60 bg-white/95 px-5 py-4 shadow-[0_4px_20px_-8px_rgba(15,76,76,0.1)]"
+                  className={`flex items-center justify-between rounded-2xl border bg-white/95 px-5 py-4 shadow-[0_4px_20px_-8px_rgba(15,76,76,0.1)] transition-colors ${
+                    selected.includes(a.id) ? "border-[var(--color-coral)]" : "border-white/60"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
+                    {items.length > 1 && (
+                      <input
+                        type="checkbox"
+                        checked={selected.includes(a.id)}
+                        onChange={() => toggleSelect(a.id)}
+                        className="h-4 w-4 accent-[var(--color-coral)]"
+                        aria-label="Select for comparison"
+                      />
+                    )}
                     <span className={`h-2.5 w-2.5 rounded-full ${RISK_DOT[a.risk_label]}`} />
                     <div>
                       <p className="text-sm font-semibold text-[var(--color-ink)]">
@@ -144,6 +215,14 @@ export default function Dashboard() {
                       </p>
                     </div>
                   </div>
+
+                  <button
+                    onClick={() => setPendingDeleteId(a.id)}
+                    className="rounded-full p-2 text-[var(--color-sage)] transition-colors hover:bg-[var(--color-coral-soft)] hover:text-[var(--color-coral)]"
+                    aria-label="Delete assessment"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               ))}
             </div>
@@ -158,6 +237,26 @@ export default function Dashboard() {
           New assessment
         </Link>
       </div>
+
+      <ConfirmDialog
+        open={!!pendingDeleteId}
+        title="Delete this assessment?"
+        description="This will permanently remove it from your history. This can't be undone."
+        confirmLabel={deleting ? "Deleting..." : "Delete"}
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={handleDeleteConfirmed}
+        onCancel={() => setPendingDeleteId(null)}
+      />
+
+      {selectedItems.length === 2 && (
+        <CompareModal
+          open={compareOpen}
+          onClose={() => setCompareOpen(false)}
+          a={selectedItems[0]}
+          b={selectedItems[1]}
+        />
+      )}
     </main>
   );
 }
