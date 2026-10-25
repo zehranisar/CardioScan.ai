@@ -19,18 +19,20 @@ function App() {
       <div className="min-h-screen bg-[var(--color-mist)] font-[var(--font-body)] text-[var(--color-ink)]">
         <Navbar />
         <Routes>
-          {/* Public auth routes — accessible without being logged in */}
+          {/* Public — anyone can use these without an account */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/assess" element={<Assessment />} />
+          <Route path="/results" element={<Results />} />
+
+          {/* Auth pages */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Everything else requires login */}
+          {/* Login required — history is tied to an account */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/assess" element={<Assessment />} />
-            <Route path="/results" element={<Results />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
 
